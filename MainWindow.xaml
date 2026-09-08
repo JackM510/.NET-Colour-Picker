@@ -5,8 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:net_colour_picker"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title=".NET Colour Picker" Height="300" Width="300">
     <Grid>
-        
+        <Label 
+               x:Name="ColourLabel"
+               Content="Colour"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               FontSize="32"
+               Foreground="black" />
+        <Button Content="btn"
+                Width="50"
+                Height="50"
+                HorizontalAlignment="Left"
+                VerticalAlignment="bottom"
+                Background="Transparent"
+                BorderThickness="0"
+                Click="ColourPickerBtn"/>
     </Grid>
 </Window>

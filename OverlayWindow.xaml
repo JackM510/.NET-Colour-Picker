@@ -1,0 +1,8 @@
+<Window x:Class="net_colour_picker.OverlayWindow"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        MouseDown="Overlay_MouseDown">
+</Window>

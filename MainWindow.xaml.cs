@@ -73,7 +73,7 @@ namespace net_colour_picker
         /* ----- Check Luminance ----- */
         private bool CheckLuminance(System.Windows.Media.Color c)
         {
-            int l = (c.R + c.G + c.B) / 3;
+            double l = (0.2126 * c.R) + (0.7152 * c.G) + (0.0722 * c.B);
             return l < 128;
         }
 

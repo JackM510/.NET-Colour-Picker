@@ -102,11 +102,5 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\dropper.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\copy.png" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

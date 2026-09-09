@@ -12,10 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
-
-
-using System.Runtime.InteropServices;
 using System.Drawing;
 
 namespace net_colour_picker
@@ -26,16 +22,6 @@ namespace net_colour_picker
         private string currentHex = "#000000";
         private string currentRgb = "0, 0, 0";
         
-        [DllImport("user32.dll")]
-        static extern IntPtr LoadCursor(IntPtr hInstance, int lpCursorName);
-
-        [DllImport("user32.dll")]
-        static extern IntPtr SetCursor(IntPtr hCursor);
-
-        const int IDC_CROSS = 32515;
-        const int IDC_ARROW = 32512;
-
-
         public MainWindow()
         {
             InitializeComponent();
@@ -52,16 +38,7 @@ namespace net_colour_picker
         private async void CopyToClipboard(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(ColourLabel.Content.ToString());
-            /*
-            var bg = ((SolidColorBrush)ColourWindow.Background).Color;
-            var iconColor = CheckLuminance(bg)
-                ? System.Windows.Media.Brushes.White
-                : System.Windows.Media.Brushes.Black;
-            CopyIcon.Fill = iconColor;
-            CheckIcon.Fill = iconColor;
-            */
-
-            /* --- Update Icons --- */
+            // --- Update Icons ---
             CopyIcon.Visibility = Visibility.Collapsed;
             CheckIcon.Visibility = Visibility.Visible;
             await Task.Delay(250);
@@ -92,18 +69,21 @@ namespace net_colour_picker
             return l < 128;
         }
 
+        /* ----- Set Cursor Cross ----- */
         private void SetCursorPicker()
         {
-            SetCursor(LoadCursor(IntPtr.Zero, IDC_CROSS));
+            Mouse.OverrideCursor = Cursors.Cross;
         }
 
+        /* ----- Set Cursor Pointer ----- */
         private void SetCursorPointer()
         {
-            SetCursor(LoadCursor(IntPtr.Zero, IDC_ARROW));
+            Mouse.OverrideCursor = null;
         }
 
         private void OnGlobalPixelClicked(System.Windows.Point screenPos)
         {
+            SetCursorPointer();
             // Get pixel colours
             var colour = GetPixelColour((int)screenPos.X, (int)screenPos.Y);
             currentHex = $"#{colour.R:X2}{colour.G:X2}{colour.B:X2}";

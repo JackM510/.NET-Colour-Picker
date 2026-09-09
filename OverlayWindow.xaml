@@ -7,8 +7,6 @@
     Background="Transparent"
     Topmost="True"
     ShowInTaskbar="False"
-    MouseDown="Overlay_MouseDown"
-    IsHitTestVisible="True">
-
+    MouseDown="Overlay_MouseDown">
     <Grid Background="#01000000" IsHitTestVisible="True"/>
 </Window>

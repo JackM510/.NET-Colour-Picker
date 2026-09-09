@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Drawing;
+using Color = System.Windows.Media.Color;
+using Brush = System.Windows.Media.Brush;
+using Brushes = System.Windows.Media.Brushes;
 
 namespace net_colour_picker
 {
@@ -27,18 +23,27 @@ namespace net_colour_picker
             InitializeComponent();
         }
 
-        /* ----- Button: Toggle Colour Format ----- */
+        // Btn: Toggle Colour Format
         private void ToggleColourFormat(object sender, RoutedEventArgs e)
         {
             showHex = !showHex;
-            ColourLabel.Content = showHex ? currentHex : currentRgb;
+            ColourText.Content = showHex ? currentHex : currentRgb;
         }
 
-        /* ----- Button: Copy to Clipboard ----- */
+        // Btn: Colour Picker
+        private void StartColourPicker(object sender, RoutedEventArgs e)
+        {
+            SetCursorPicker();
+            var overlay = new OverlayWindow();
+            overlay.PixelClicked += OnPixelClicked;
+            overlay.Show();
+        }
+
+        // Btn: Copy to Clipboard
         private async void CopyToClipboard(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(ColourLabel.Content.ToString());
-            // --- Update Icons ---
+            Clipboard.SetText(ColourText.Content.ToString());
+            // Update Icons
             CopyIcon.Visibility = Visibility.Collapsed;
             CheckIcon.Visibility = Visibility.Visible;
             await Task.Delay(250);
@@ -46,82 +51,81 @@ namespace net_colour_picker
             CopyIcon.Visibility = Visibility.Visible;
         }
 
-        /* ----- Button: Colour Picker ----- */
-        private void ColourPickerBtn(object sender, RoutedEventArgs e)
-        {
-            StartPickerMode();
-        }
-
-        /* ----- Toggle Picker Mode ----- */
-        private void StartPickerMode()
-        {
-            SetCursorPicker();
-            var overlay = new OverlayWindow();
-            overlay.PixelClicked += OnGlobalPixelClicked;
-            overlay.Show();
-
-        }
-
-        /* ----- Check Luminance ----- */
-        private bool CheckLuminance(System.Windows.Media.Color c)
+        // Check Luminance
+        private bool CheckLuminance(Color c)
         {
             double l = (0.2126 * c.R) + (0.7152 * c.G) + (0.0722 * c.B);
             return l < 128;
         }
 
-        /* ----- Set Cursor Cross ----- */
+        // Determine Button & Path colours
+        private Brush GetContrastBrush(Color c)
+        {
+            return CheckLuminance(c) ? Brushes.White : Brushes.Black;
+        }
+
+        // Set Button & Path colours
+        private void SetBrushContrast(Object el, Brush b)
+        {
+            switch (el)
+            {   
+                // Btn Text
+                case Control c:
+                    c.Foreground = b;
+                    break;
+                // Icons
+                case Shape s:
+                    s.Fill = b;
+                    break;
+            }
+        }
+
+        // Set Cursor Cross
         private void SetCursorPicker()
         {
             Mouse.OverrideCursor = Cursors.Cross;
         }
 
-        /* ----- Set Cursor Pointer ----- */
+        // Set Cursor Pointer
         private void SetCursorPointer()
         {
             Mouse.OverrideCursor = null;
         }
 
-        private void OnGlobalPixelClicked(System.Windows.Point screenPos)
+        // Colour Clicked
+        private void OnPixelClicked(System.Windows.Point screenPos)
         {
+            // Update cursor & get colour
             SetCursorPointer();
-            // Get pixel colours
             var colour = GetPixelColour((int)screenPos.X, (int)screenPos.Y);
             currentHex = $"#{colour.R:X2}{colour.G:X2}{colour.B:X2}";
             currentRgb = $"{colour.R}, {colour.G}, {colour.B}";
-            // Change label colour
-            ColourWindow.Background = new SolidColorBrush(colour);
-            ColourLabel.Content = showHex ? currentHex : currentRgb;
 
-            ColourLabel.Foreground = CheckLuminance(colour)
-                ? System.Windows.Media.Brushes.White
-                : System.Windows.Media.Brushes.Black;
-            PickerIcon.Fill = CheckLuminance(colour)
-                ? System.Windows.Media.Brushes.White
-                : System.Windows.Media.Brushes.Black;
-            CopyIcon.Fill = CheckLuminance(colour)
-                ? System.Windows.Media.Brushes.White
-                : System.Windows.Media.Brushes.Black;
-            CheckIcon.Fill = CheckLuminance(colour)
-                ? System.Windows.Media.Brushes.White
-                : System.Windows.Media.Brushes.Black;
+            // Update background, Btn Text & Icons
+            ColourWindow.Background = new SolidColorBrush(colour);
+            ColourText.Content = showHex ? currentHex : currentRgb;
+            var brush = GetContrastBrush(colour);
+            SetBrushContrast(ColourText, brush);
+            SetBrushContrast(PickerIcon, brush);
+            SetBrushContrast(CopyIcon, brush);
+            SetBrushContrast(CheckIcon, brush);
         }
 
-        /* ----- Get Pixel Colour ----- */
-        private System.Windows.Media.Color GetPixelColour(int x, int y)
+        // Get Pixel Colour
+        private Color GetPixelColour(int x, int y)
         {
-            // Create a 1x1 bitmap and auto-dispose when finished
-            // Bitmap is a tiny image stored in memory - which we can read the pixels colour from
+            // Create empty 1x1 bitmap
             using (var bmap = new Bitmap(1,1))
             {   
-                // Create graphics object that can copy pixel from Bitmap
-                using (var g = System.Drawing.Graphics.FromImage(bmap))
+                // Create graphics object from the bitmap
+                using (var g = Graphics.FromImage(bmap))
                 {
-                    // Copy pixel from the screen at position (x,y)
+                    // Copy pixel from x,y onto the bitmap
                     g.CopyFromScreen(x, y, 0, 0, new System.Drawing.Size(1, 1));
                 }
-                // Read the colour of the pixel (returns Color object with RGB values)
+                // Read pixel colour from bitmap (returns RGB)
                 var c = bmap.GetPixel(0, 0);
-                return System.Windows.Media.Color.FromRgb(c.R, c.G, c.B);
+                return Color.FromRgb(c.R, c.G, c.B);
             }
         }
     }

@@ -7,6 +7,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:net_colour_picker"
         mc:Ignorable="d"
+        Icon="/Assets/favicon.ico"
         Title=".NET Colour Picker"
         Background="#ffffff"
         Height="250"

@@ -49,9 +49,24 @@ namespace net_colour_picker
         }
 
         /* ----- Button: Copy to Clipboard ----- */
-        private void CopyToClipboard(object sender, RoutedEventArgs e)
+        private async void CopyToClipboard(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(ColourLabel.Content.ToString());
+            /*
+            var bg = ((SolidColorBrush)ColourWindow.Background).Color;
+            var iconColor = CheckLuminance(bg)
+                ? System.Windows.Media.Brushes.White
+                : System.Windows.Media.Brushes.Black;
+            CopyIcon.Fill = iconColor;
+            CheckIcon.Fill = iconColor;
+            */
+
+            /* --- Update Icons --- */
+            CopyIcon.Visibility = Visibility.Collapsed;
+            CheckIcon.Visibility = Visibility.Visible;
+            await Task.Delay(250);
+            CheckIcon.Visibility = Visibility.Collapsed;
+            CopyIcon.Visibility = Visibility.Visible;
         }
 
         /* ----- Button: Colour Picker ----- */
@@ -77,8 +92,6 @@ namespace net_colour_picker
             return l < 128;
         }
 
-
-
         private void SetCursorPicker()
         {
             SetCursor(LoadCursor(IntPtr.Zero, IDC_CROSS));
@@ -89,17 +102,6 @@ namespace net_colour_picker
             SetCursor(LoadCursor(IntPtr.Zero, IDC_ARROW));
         }
 
-        /*private void Window_MouseDown(object sender, RoutedEventArgs e)
-        {
-
-            var pos = Mouse.GetPosition(this);
-            var screenPos = PointToScreen(pos);
-            var colour = GetPixelColour((int)Math.Round(screenPos.X), (int)Math.Round(screenPos.Y));
-            // Update ColourLabel
-            ColourLabel.Foreground = new SolidColorBrush(colour);
-            MouseDown -= Window_MouseDown;
-        }*/
-
         private void OnGlobalPixelClicked(System.Windows.Point screenPos)
         {
             // Get pixel colours
@@ -109,6 +111,7 @@ namespace net_colour_picker
             // Change label colour
             ColourWindow.Background = new SolidColorBrush(colour);
             ColourLabel.Content = showHex ? currentHex : currentRgb;
+
             ColourLabel.Foreground = CheckLuminance(colour)
                 ? System.Windows.Media.Brushes.White
                 : System.Windows.Media.Brushes.Black;
@@ -116,6 +119,9 @@ namespace net_colour_picker
                 ? System.Windows.Media.Brushes.White
                 : System.Windows.Media.Brushes.Black;
             CopyIcon.Fill = CheckLuminance(colour)
+                ? System.Windows.Media.Brushes.White
+                : System.Windows.Media.Brushes.Black;
+            CheckIcon.Fill = CheckLuminance(colour)
                 ? System.Windows.Media.Brushes.White
                 : System.Windows.Media.Brushes.Black;
         }

@@ -41,37 +41,44 @@
     </Window.Resources>
     <Grid>
         <Button 
-               x:Name="ColourLabel"
-               Content="#000000"
-               HorizontalAlignment="Center"
-               VerticalAlignment="Center"
-               FontSize="32"
-               Foreground="black"
-               Click="ToggleColourFormat"
+            x:Name="ColourLabel"
+            Content="#000000"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontSize="32"
+            Foreground="black"
+            Click="ToggleColourFormat"
             />
         <Button 
-                Width="50"
-                Height="50"
-                Padding="16,16"
-                HorizontalAlignment="Left"
-                VerticalAlignment="bottom"
-                Click="ColourPickerBtn">
+            Width="50"
+            Height="50"
+            Padding="16,16"
+            HorizontalAlignment="Left"
+            VerticalAlignment="bottom"
+            Click="ColourPickerBtn">
             <Path Data="M120-120v-175.33L490.67-666l-67.34-66.67 46.67-46L556.67-692l136-136q5-5 11.5-8t13.16-3q6.67 0 13 3 6.34 3 12.34 8L828-742.67q5 6 8 12.34 3 6.33 3 13 0 6.66-3 13.16t-8 11.5L692.33-557 779-469.67l-46.33 46.34L666-490.67 295.33-120H120Zm66.67-66.67h84l347.33-348L534.67-618l-348 347.33v84Z"
               x:Name="PickerIcon"
               Fill="Black"
               Stretch="Uniform"/>
         </Button>
         <Button 
-                Width="50"
-                Height="50"
-                Padding="16,16"
-                HorizontalAlignment="Right"
-                VerticalAlignment="bottom"
-                Click="CopyToClipboard">
-            <Path Data="M320-213.33q-27 0-46.83-19.84Q253.33-253 253.33-280v-533.33q0-27 19.84-46.84Q293-880 320-880h413.33q27 0 46.84 19.83Q800-840.33 800-813.33V-280q0 27-19.83 46.83-19.84 19.84-46.84 19.84H320Zm0-66.67h413.33v-533.33H320V-280ZM186.67-80q-27 0-46.84-19.83Q120-119.67 120-146.67v-600h66.67v600h480V-80h-480ZM320-280v-533.33V-280Z"
-              x:Name="CopyIcon"
-              Fill="Black"
-              Stretch="Uniform"/>
+            Width="50"
+            Height="50"
+            Padding="16,16"
+            HorizontalAlignment="Right"
+            VerticalAlignment="bottom"
+            Click="CopyToClipboard">
+            <Grid>
+                <Path Data="M320-213.33q-27 0-46.83-19.84Q253.33-253 253.33-280v-533.33q0-27 19.84-46.84Q293-880 320-880h413.33q27 0 46.84 19.83Q800-840.33 800-813.33V-280q0 27-19.83 46.83-19.84 19.84-46.84 19.84H320Zm0-66.67h413.33v-533.33H320V-280ZM186.67-80q-27 0-46.84-19.83Q120-119.67 120-146.67v-600h66.67v600h480V-80h-480ZM320-280v-533.33V-280Z"
+                  x:Name="CopyIcon"
+                  Fill="Black"
+                  Stretch="Uniform"/>
+                <Path Data="M400-313.33 244.67-468.67l46.66-46.66L400-406.67l268.67-268.66 46.66 46.66L400-313.33Z"
+                  x:Name="CheckIcon"
+                  Fill="Black"
+                  Stretch="Uniform"
+                  Visibility="Collapsed"/>
+            </Grid>
         </Button>
     </Grid>
 </Window>

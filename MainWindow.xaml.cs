@@ -13,47 +13,114 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
+
+using System.Runtime.InteropServices;
 using System.Drawing;
 
 namespace net_colour_picker
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        private bool showHex = true;
+        private string currentHex = "#000000";
+        private string currentRgb = "0, 0, 0";
+        
+        [DllImport("user32.dll")]
+        static extern IntPtr LoadCursor(IntPtr hInstance, int lpCursorName);
+
+        [DllImport("user32.dll")]
+        static extern IntPtr SetCursor(IntPtr hCursor);
+
+        const int IDC_CROSS = 32515;
+        const int IDC_ARROW = 32512;
+
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        // Colour Picker Button
+        /* ----- Button: Toggle Colour Format ----- */
+        private void ToggleColourFormat(object sender, RoutedEventArgs e)
+        {
+            showHex = !showHex;
+            ColourLabel.Content = showHex ? currentHex : currentRgb;
+        }
+
+        /* ----- Button: Copy to Clipboard ----- */
+        private void CopyToClipboard(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(ColourLabel.Content.ToString());
+        }
+
+        /* ----- Button: Colour Picker ----- */
         private void ColourPickerBtn(object sender, RoutedEventArgs e)
         {
             StartPickerMode();
         }
 
-        // Secondary Click - Pixel Selected
+        /* ----- Toggle Picker Mode ----- */
         private void StartPickerMode()
         {
-            MouseDown += Window_MouseDown;
+            SetCursorPicker();
+            var overlay = new OverlayWindow();
+            overlay.PixelClicked += OnGlobalPixelClicked;
+            overlay.Show();
+
         }
 
-        // MouseDown
-        private void Window_MouseDown(object sender, RoutedEventArgs e)
+        /* ----- Check Luminance ----- */
+        private bool CheckLuminance(System.Windows.Media.Color c)
         {
-            // Mouse Position relative to window
+            int l = (c.R + c.G + c.B) / 3;
+            return l < 128;
+        }
+
+
+
+        private void SetCursorPicker()
+        {
+            SetCursor(LoadCursor(IntPtr.Zero, IDC_CROSS));
+        }
+
+        private void SetCursorPointer()
+        {
+            SetCursor(LoadCursor(IntPtr.Zero, IDC_ARROW));
+        }
+
+        /*private void Window_MouseDown(object sender, RoutedEventArgs e)
+        {
+
             var pos = Mouse.GetPosition(this);
-            // Screen coords
             var screenPos = PointToScreen(pos);
-
             var colour = GetPixelColour((int)Math.Round(screenPos.X), (int)Math.Round(screenPos.Y));
-
             // Update ColourLabel
             ColourLabel.Foreground = new SolidColorBrush(colour);
             MouseDown -= Window_MouseDown;
+        }*/
+
+        private void OnGlobalPixelClicked(System.Windows.Point screenPos)
+        {
+            // Get pixel colours
+            var colour = GetPixelColour((int)screenPos.X, (int)screenPos.Y);
+            currentHex = $"#{colour.R:X2}{colour.G:X2}{colour.B:X2}";
+            currentRgb = $"{colour.R}, {colour.G}, {colour.B}";
+            // Change label colour
+            ColourWindow.Background = new SolidColorBrush(colour);
+            ColourLabel.Content = showHex ? currentHex : currentRgb;
+            ColourLabel.Foreground = CheckLuminance(colour)
+                ? System.Windows.Media.Brushes.White
+                : System.Windows.Media.Brushes.Black;
+            PickerIcon.Fill = CheckLuminance(colour)
+                ? System.Windows.Media.Brushes.White
+                : System.Windows.Media.Brushes.Black;
+            CopyIcon.Fill = CheckLuminance(colour)
+                ? System.Windows.Media.Brushes.White
+                : System.Windows.Media.Brushes.Black;
         }
 
+        /* ----- Get Pixel Colour ----- */
         private System.Windows.Media.Color GetPixelColour(int x, int y)
         {
             // Create a 1x1 bitmap and auto-dispose when finished

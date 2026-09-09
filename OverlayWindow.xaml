@@ -1,8 +1,14 @@
-<Window x:Class="net_colour_picker.OverlayWindow"
-        WindowStyle="None"
-        AllowsTransparency="True"
-        Background="Transparent"
-        Topmost="True"
-        ShowInTaskbar="False"
-        MouseDown="Overlay_MouseDown">
+﻿<Window 
+    x:Class="net_colour_picker.OverlayWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    WindowStyle="None"
+    AllowsTransparency="True"
+    Background="Transparent"
+    Topmost="True"
+    ShowInTaskbar="False"
+    MouseDown="Overlay_MouseDown"
+    IsHitTestVisible="True">
+
+    <Grid Background="#01000000" IsHitTestVisible="True"/>
 </Window>

@@ -3,7 +3,7 @@ A lightweight utility built with .NET and WPF for quickly sampling colours anywh
 
 ## Demo Screenshots
 <div style="display: flex;">
-  <img src="demo/demo-screenshot.png" width="auto" />
+  <img src="Demo/demo-screenshot.png" width="auto" />
 </div>
 
 ## Features
